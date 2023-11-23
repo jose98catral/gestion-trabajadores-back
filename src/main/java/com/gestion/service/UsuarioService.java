@@ -19,4 +19,6 @@ public interface UsuarioService {
     public List<Usuario> listarUsuarios();
     
     public Usuario asignarRolAUsuario(Usuario usuario, Rol rol);
+    
+    public Usuario findByUsername(String username);
 }

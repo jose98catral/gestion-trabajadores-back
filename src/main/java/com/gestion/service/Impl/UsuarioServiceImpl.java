@@ -5,6 +5,7 @@
 package com.gestion.service.Impl;
 
 
+import com.gestion.config.PasswordEncoderConfig;
 import com.gestion.model.Rol;
 import com.gestion.model.Usuario;
 import com.gestion.repository.UsuarioRepository;
@@ -14,11 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 @Autowired
 private UsuarioRepository usuarioRepository;
+ @Autowired
+    private PasswordEncoder passwordEncoder;
 
 private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.class);
     @Override
@@ -26,6 +30,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.
         logger.debug("Entrando al método añadirUsuario");
         
          Usuario usuarioCreado = asignarRolAUsuario(usuario, rol);
+         usuarioCreado.setPassword(passwordEncoder.encode(usuario.getPassword()));
         logger.info("Entrando al método añadirUsuario  " + usuarioCreado);
         logger.debug("Entrando al método añadirUsuario " + usuarioCreado);
         
@@ -55,8 +60,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.
            if(usuario.getTelefono()!= null){
             usuarioEditar.setTelefono(usuario.getTelefono());
         }
-            if(usuario.getContraseña()!= null){
-            usuarioEditar.setContraseña(usuario.getContraseña());
+            if(usuario.getPassword()!= null){
+            usuarioEditar.setPassword(usuario.getPassword());
         }
              if(usuario.getFoto()!= null){
             usuarioEditar.setFoto(usuario.getFoto());
@@ -74,6 +79,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.
     public Usuario asignarRolAUsuario(Usuario usuario, Rol rol) {
         usuario.setRol(rol);
          return usuario;
+    }
+
+    @Override
+    public Usuario findByUsername(String Uusario) {
+        return this.usuarioRepository.findByUsername(Uusario);
     }
     
     
